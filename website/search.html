@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LEMMA LIMES Site Search | Tutorialzine Demo</title>
+
+<link rel="stylesheet" type="text/css" href="styles.css" />
+
+</head>
+
+<body>
+
+<div id="page">
+
+    <h1>LEMMA LIMES Site Search</h1>
+    
+    <form id="searchForm" method="post">
+		<fieldset>
+        
+           	<input id="s" type="text" />
+            
+            <input type="submit" value="Submit" id="submitButton" />
+            
+            <div id="searchInContainer">
+                <input type="radio" name="check" value="song" id="searchSong" checked />
+                <label for="searchSong">Search by Song</label>
+                
+                <input type="radio" name="check" value="artisit" id="searchArtisit" />
+                <label for="searchArtisit">Search by Artisit</label>
+			</div>
+                        
+   
+            
+        </fieldset>
+    </form>
+
+    <div id="resultsDiv"></div>
+    
+</div>
+
+<!-- Credit goes out to Genius API-->
+<p class="credit"><a href="http://genius.com/">Powered by Genius API</a></p>
+    
+
+<!-- TEMPLETE http://www.designrazor.net/free-html-css-search-box-download/ -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
