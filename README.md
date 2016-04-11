@@ -20,6 +20,7 @@ $ python ranker.py -song "SONG HERE"
 EXAMPLES:
 
 $ python ranker.py 'sad'
+
 1. Somebody Already Broke My Heart - 0.272399255083
 2. Made To Be Together - 0.187276338082
 3. Let Me Buy U A Drink - 0.148157669342
@@ -28,6 +29,7 @@ $ python ranker.py 'sad'
 
 
 $ python ranker.py 'money power wealth' 
+
 1. Glitter - 0.168878862684
 2. Any Girl - 0.0880240472042
 3. The Name Game - 0.0807053337038
@@ -36,6 +38,7 @@ $ python ranker.py 'money power wealth'
 
 
 $ python ranker.py 'food puppies'
+
 1. Martha My Dear - 0.156185290791
 2. Frisky - 0.107879688286
 3. I Gotcha - 0.105866861719
@@ -44,6 +47,7 @@ $ python ranker.py 'food puppies'
 
 
 $ python ranker.py -song 'martha my dear'
+
 1. Martha My Dear - 1.0
 2. Yesterday - 0.149195486126
 3. Let It Be - 0.124583387816
@@ -52,6 +56,7 @@ $ python ranker.py -song 'martha my dear'
 
 
 $ python ranker.py -song 'power'
+
 1. Power - 1.0
 2. Power (Remix) - 0.19399928664
 3. All of the Lights - 0.12338616064
@@ -60,6 +65,7 @@ $ python ranker.py -song 'power'
 
 
 $ python ranker.py -song 'bohemian rhapsody'
+
 1. Bohemian Rhapsody - 1.0
 2. One Mic - 0.0901673839659
 3. Devil In a New Dress - 0.0880562488001
