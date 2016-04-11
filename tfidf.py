@@ -1,0 +1,76 @@
+#!/usr/bin/python
+import os
+import re
+import sys
+import math
+import random
+import json
+
+#writes normalized tfidf scores to filename
+def tfidf(directory_in, filename_out):
+	#tokenize docs, each token as an alphebetic character sequence >=3
+	num_docs = 0 
+	song_title_dict = {}
+	inverse_index = {}
+	doc_freq = {}
+	
+	for filename in os.listdir(directory_in):
+		if filename[:-1] != 'songs':
+			continue
+		docs = json.load(open(directory_in + '/' + filename,'r'), 'utf-8')
+		for doc in docs:
+			song_title_dict.update({doc['song_id']:doc['title']})
+		num_docs += len(docs)
+		for doc in docs:
+			name = str(doc['song_id'])
+			text = doc['annotations'].lower()
+			words = re.findall('[a-z]{3,}', text)
+			for w in words:
+				if inverse_index.has_key(w) and inverse_index[w].has_key(name):
+					inverse_index[w][name] += 1
+				elif inverse_index.has_key(w):
+					inverse_index[w].update({name:1})
+					doc_freq[w] += 1
+				else:
+					inverse_index.update({w:{name:1}})
+					doc_freq.update({w:1})
+
+	json.dump(song_title_dict,open('Data/' + filename_out + '-title-dict', 'w'))
+
+	#Calculate TFIDF score for each value in doc inverse index
+	#formula: (1+log(tf))*log(N/df) 
+	doc_vector_lengths = {}
+	for term in inverse_index.iteritems():
+		for entry in term[1].iteritems():
+			#formula: (1+log(tf))*log(N/df) 
+			new_val = (1+math.log10(entry[1]))*(math.log10(float(num_docs)/doc_freq[term[0]]))
+			if not doc_vector_lengths.has_key(entry[0]):
+				doc_vector_lengths.update({entry[0]:0})
+			doc_vector_lengths[entry[0]] += math.pow(new_val,2.0)
+			inverse_index[term[0]][entry[0]] = new_val
+
+	#Get doc vector lengths
+	#formula: sqrt(a2 + b2 + c2 ...)
+	doc_vector_lengths = {doc: math.sqrt(float(val)) for doc, val in doc_vector_lengths.iteritems()}
+
+	#Normalize doc vectors
+	#formula: (TFIDF score) / (Vector length)
+	for term, entries in inverse_index.iteritems():
+		inverse_index[term] = {doc:float(score)/doc_vector_lengths[doc] for doc, score in entries.iteritems()}
+	print inverse_index[term]
+	f = open('Data/' + filename_out + '-tfidf', 'w')
+	json.dump(inverse_index, f)
+	f = open('Data/' + filename_out + '-doc_freq', 'w')
+	doc_freq.update({'n_docs':num_docs})
+	json.dump(doc_freq, f)
+
+	doc_vector = {}
+	for term, data in inverse_index.iteritems():
+		for doc, score in data.iteritems():
+			if not doc_vector.has_key(doc):
+				doc_vector.update({doc:{}})
+			doc_vector[doc].update({term:score})
+	json.dump(doc_vector, open('Data/' + filename_out + '-doc-vector', 'w'))
+
+tfidf('Data/songs_raw', 'index/songs')
+
