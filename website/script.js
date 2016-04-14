@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 	var config = {
-		siteURL		: 'tutorialzine.com',	// Change this to your site
+		siteURL		: 'genius.com',	// Change this to your site tutorialzine
 		searchSite	: true,
 		type		: 'web',
 		append		: false,

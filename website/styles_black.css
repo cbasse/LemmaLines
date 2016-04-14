@@ -3,12 +3,11 @@
 	padding:0;
 }
 
-/*web results text*/
 body{
-	font-size:15px;
-	color:black;
+	font-size:13px;
+	color:#eee;
 	font-family:Arial, Helvetica, sans-serif;
-	background:url('img/bg3.jpg') repeat-x #7AF55C;
+	background:url('img/black.jpg') repeat-x #000;
 }
 
 #page{
@@ -28,19 +27,15 @@ h1{
 #searchForm{
 	/* The search form. */
 	/*background-color:*/
-	background-color:none;
+	background-color:#EFFC3C;
 	padding:50px 50px 30px;
 	margin:80px 0;
 	position:relative;
-	/*border: 1px solid black;*/
-	border-bottom: 1px solid black;
-	border-top: 1px solid black;
-	
+
 	-moz-border-radius:16px;
 	-webkit-border-radius:16px;
 	border-radius:16px;
 }
-
 
 fieldset{
 	border:none;
@@ -72,11 +67,10 @@ fieldset{
 	padding:0 0 0 35px;
 	text-shadow:1px 1px 0 white;
 	width:385px;
-	margin-top:-5px;
 }
 
 /* The UL that contains the search type icons */
-/*
+
 .icons{
 	list-style:none;
 	margin:10px 0 0 335px;
@@ -93,7 +87,7 @@ fieldset{
 	margin-right:5px;
 }
 
-/ Styling each icon /
+/* Styling each icon */
 
 li.web{ width:15px;}
 li.web.active,
@@ -112,7 +106,7 @@ li.videos.active,
 li.videos:hover{ background-position:right bottom;}
 
 span.arrow{
-	/ The little arrow that moves below the icons /
+	/* The little arrow that moves below the icons */
 	
 	width:11px;
 	height:6px;
@@ -120,10 +114,12 @@ span.arrow{
 	position:absolute;
 	background:url('img/arrow.png') no-repeat;
 	left:0;
-} */
+}
 
 
 /* The submit button */
+
+
 #submitButton{
 	background:url('img/buttons.png') no-repeat;
 	width:83px;
@@ -133,7 +129,6 @@ span.arrow{
 	text-transform:uppercase;
 	border:none;
 	cursor:pointer;
-	margin-top:-5px;
 }
 
 #submitButton:hover{
@@ -141,18 +136,19 @@ span.arrow{
 }
 
 
-/* The Search genius.com / Search the Web radio buttons */
+/* The Search tutorialzine.com / Search the Web radio buttons */
+
+
 #searchInContainer{
 	float:left;
-	margin-top:5px;
+	margin-top:12px;
 	width:330px;
 }
 
-/*search for song/album option*/
 label{
 	color:#000;
 	cursor:pointer;
-	font-size:14px;
+	font-size:11px;
 	position:relative;
 	right:-2px;
 	top:-2px;
@@ -175,10 +171,11 @@ input[type=radio]{
 	border-bottom:1px solid #5e7481;
 	margin-bottom:50px;
 	
-	/* Adding a dark bottom border with box shadow (line at bottom of page)*/
-	-moz-box-shadow:0 1px 0 black;
-	-webkit-box-shadow:0 1px 0 black;
-	box-shadow:0 1px 0 black;
+	/* Adding a dark bottom border with box shadow */
+	
+	-moz-box-shadow:0 1px 0 #798e9c;
+	-webkit-box-shadow:0 1px 0 #798e9c;
+	box-shadow:0 1px 0 #798e9c;
 }
 
 
@@ -191,25 +188,24 @@ p.notFound{
 /* Web & news results */
 
 
-.webResult{ text-shadow:1px 1px 0 #fff;margin-bottom:50px;} /*white text shadow*/
+.webResult{ text-shadow:1px 1px 0 #586a75;margin-bottom:50px;}
 .webResult h2{ 
-	/* Background color of web results view  #EFFC3C;-yellow*/
-	background-color: #6ddc52;
+	/* Background color of web results view #5D6F7B;*/
+	background-color: #7AF55C;
 	font-size:18px;
 	font-weight:normal;
 	padding:8px 20px;
-
 	
 	/* Applying CSS3 rounded corners */
-	-moz-border-radius:10px;
-	-webkit-border-radius:10px;
-	border-radius:10px;
+	-moz-border-radius:18px;
+	-webkit-border-radius:18px;
+	border-radius:18px;
 }
 /*text color of web results view ff0000-red, fff-white, eee-gray shadow*/
-.webResult h2 b{ color:#FF0000; } /*red in result title*/
-.webResult h2 a{ color:#000;border:none;}
+.webResult h2 b{ color:#FF0000; }
+.webResult h2 a{ color:#eee;border:none;}
 .webResult p{ line-height:1.5;padding:15px 20px;}
-.webResult p b{ color:red;} /*red in result description*/
+.webResult p b{ color:blue;}
 .webResult > a{ margin-left:20px;}
 
 
@@ -255,8 +251,7 @@ p.credit{
 	text-align:center;
 }
 
-/*powered by Genius API link */
-/*p.credit a{
+p.credit a{
 	background-color:#4B5A64;
 	border:1px solid;
 	border-color:#3D4D57 #788E9B #788E9B #3D4D57;
@@ -269,15 +264,14 @@ p.credit{
 p.credit a:hover{
 	background-color:#38464f;
 	border-color:#38464f #788E9B #788E9B #38464f;
-} */
+}
 
-/* URL genius.com link */
-/*a, a:visited {
+a, a:visited {
 	text-decoration:none;
 	outline:none;
 	border-bottom:1px dotted #97cae6;
 	color:#97cae6;
-}*/
+}
 
 a:hover{
 	border-bottom:1px dashed transparent;
