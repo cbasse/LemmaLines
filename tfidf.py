@@ -6,6 +6,22 @@ import math
 import random
 import json
 
+import gzip
+import cStringIO
+
+def compressFileToString(inputFile):
+  """
+  read the given open file, compress the data and return it as string.
+  """
+  stream = cStringIO.StringIO()
+  compressor = gzip.GzipFile(fileobj=stream, mode='w')
+  while True:  # until EOF
+    chunk = inputFile.read(8192)
+    if not chunk:  # EOF?
+      compressor.close()
+      return open("testzip","w").write(stream.getvalue())
+    compressor.write(chunk)
+
 #writes normalized tfidf scores to filename
 def tfidf(directory_in, filename_out):
 	#tokenize docs, each token as an alphebetic character sequence >=3
@@ -15,14 +31,15 @@ def tfidf(directory_in, filename_out):
 	doc_freq = {}
 	
 	for filename in os.listdir(directory_in):
-		if filename[:-1] != 'songs':
+		print filename 
+		if filename[:5] != 'songs':
 			continue
 		docs = json.load(open(directory_in + '/' + filename,'r'), 'utf-8')
 		for doc in docs:
-			song_title_dict.update({doc['song_id']:doc['title']})
+			song_title_dict.update({int(doc['song_id']):doc['title']})
 		num_docs += len(docs)
 		for doc in docs:
-			name = str(doc['song_id'])
+			name = doc['song_id']
 			text = doc['annotations'].lower()
 			words = re.findall('[a-z]{3,}', text)
 			for w in words:
@@ -56,14 +73,16 @@ def tfidf(directory_in, filename_out):
 	#Normalize doc vectors
 	#formula: (TFIDF score) / (Vector length)
 	for term, entries in inverse_index.iteritems():
-		inverse_index[term] = {doc:float(score)/doc_vector_lengths[doc] for doc, score in entries.iteritems()}
+		inverse_index[term] = {doc:round(float(score)/doc_vector_lengths[doc],4) for doc, score in entries.iteritems()}
 	print inverse_index[term]
 	f = open('Data/' + filename_out + '-tfidf', 'w')
 	json.dump(inverse_index, f)
+	f.close()
+	#compressFileToString(open('Data/' + filename_out + '-tfidf', 'r'))
 	f = open('Data/' + filename_out + '-doc_freq', 'w')
 	doc_freq.update({'n_docs':num_docs})
 	json.dump(doc_freq, f)
-
+	f.close()
 	doc_vector = {}
 	for term, data in inverse_index.iteritems():
 		for doc, score in data.iteritems():
@@ -73,4 +92,3 @@ def tfidf(directory_in, filename_out):
 	json.dump(doc_vector, open('Data/' + filename_out + '-doc-vector', 'w'))
 
 tfidf('Data/songs_raw', 'index/songs')
-
