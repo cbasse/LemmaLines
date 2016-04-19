@@ -25,12 +25,21 @@ h1{
 	height:120px;
 }
 
+h2{
+	font-family:Corbel,'Myriad Pro',Arial, Helvetica, sans-serif;
+	color:black;
+	font-size:25px;
+	position:relative;
+	padding-left:350px;
+	padding-top:10px;
+}
+
 #searchForm{
 	/* The search form. */
 	/*background-color:*/
 	background-color:none;
 	padding:50px 50px 30px;
-	margin:80px 0;
+	margin:70px 0;
 	position:relative;
 	/*border: 1px solid black;*/
 	border-bottom: 1px solid black;
