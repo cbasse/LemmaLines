@@ -38,7 +38,7 @@ $(document).ready(function(){
 	$('#siteNameLabel').append(' '+config.siteURL);
 	
 	// Marking the Search tutorialzine.com radio as active:
-	$('#searchSite').click();	
+	$('#searchSong').click();	
 	
 	// Marking the web search icon as active:
 	$('li.web').click();
@@ -51,11 +51,11 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	$('#searchSite,#searchWeb').change(function(){
+	$('#searchSong,#searchAlbumn').change(function(){
 		// Listening for a click on one of the radio buttons.
-		// config.searchSite is either true or false.
+		// config.searchSong is either true or false.
 		
-		config.searchSite = this.id == 'searchSite';
+		config.searchSong = this.id == 'searchSong';
 	});
 	
 	
@@ -67,7 +67,7 @@ $(document).ready(function(){
 		settings = $.extend({},config,settings);
 		settings.term = settings.term || $('#s').val();
 		
-		if(settings.searchSite){
+		if(settings.searchSong){
 			// Using the Google site:example.com to limit the search to a
 			// specific domain:
 			settings.term = 'site:'+settings.siteURL+' '+settings.term;
@@ -135,13 +135,13 @@ $(document).ready(function(){
 		
 		// GsearchResultClass is passed by the google API
 		switch(r.GsearchResultClass){
-
+			
 			case 'GwebSearch':
 				arr = [
 					'<div class="webResult">',
-					'<h2><a href="',r.unescapedUrl,'" target="_blank">',r.title,'</a></h2>',
-					'<p>',r.content,'</p>',
-					'<a href="',r.unescapedUrl,'" target="_blank">',r.visibleUrl,'</a>',
+					'<h2><a href="',r.unescapedUrl,'" target="_blank">',r.title,'</a></h2>', //r.title displays artist & title
+					'<p>',r.content,'</p>', //r.content is the description displayed
+					'<a href="',r.unescapedUrl,'" target="_blank">',r.visibleUrl,'</a>', //r.visibleUrl is the blue url link
 					'</div>'
 				];
 			break;
