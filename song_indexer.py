@@ -30,13 +30,21 @@ def tfidf(directory_in, filename_out):
 	inverse_index = {}
 	doc_freq = {}
 	
+	
 	for filename in os.listdir(directory_in):
 		print filename 
 		if filename[:5] != 'songs':
 			continue
 		docs = json.load(open(directory_in + '/' + filename,'r'), 'utf-8')
 		for doc in docs:
-			song_title_dict.update({int(doc['song_id']):doc['title']})
+			song_id = int(doc['song_id'])
+			song_title_dict.update({song_id:{}})
+			song_title_dict[song_id].update({'title':doc['title']})
+			song_title_dict[song_id].update({'url':'http://genius.com/songs/'+str(song_id)})
+			song_title_dict[song_id].update({'pyongs_count':doc['pyongs_count']})
+			song_title_dict[song_id].update({'artist_name':doc['artist']['name']})
+			song_title_dict[song_id].update({'artist_url':doc['artist']['url']})
+			song_title_dict[song_id].update({'annotations':doc['annotations'][:250] + '...'})
 		num_docs += len(docs)
 		for doc in docs:
 			name = doc['song_id']
@@ -73,7 +81,7 @@ def tfidf(directory_in, filename_out):
 	#Normalize doc vectors
 	#formula: (TFIDF score) / (Vector length)
 	for term, entries in inverse_index.iteritems():
-		inverse_index[term] = {doc:round(float(score)/doc_vector_lengths[doc],4) for doc, score in entries.iteritems()}
+		inverse_index[term] = {doc:round(float(score)/doc_vector_lengths[doc],3) for doc, score in entries.iteritems()}
 	print inverse_index[term]
 	f = open('Data/' + filename_out + '-tfidf', 'w')
 	json.dump(inverse_index, f)

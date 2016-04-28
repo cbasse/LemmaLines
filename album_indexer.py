@@ -42,6 +42,7 @@ def get_raw_albums():
 #writes normalized tfidf scores to filename
 def tfidf(directory_in, filename_out):
 	#tokenize docs, each token as an alphebetic character sequence >=3
+
 	num_docs = 0 
 	id_title_dict = {}
 	inverse_index = {}
@@ -49,7 +50,14 @@ def tfidf(directory_in, filename_out):
 	
 	docs = json.load(open(directory_in,'r'), 'utf-8')
 	for doc_id,content in docs.iteritems():
-		id_title_dict.update({doc_id:content['album']['name']})
+		id_title_dict.update({doc_id:{}})
+		id_title_dict[doc_id].update({'title':content['album']['name']})
+		id_title_dict[doc_id].update({'url':content['album']['url']})
+		id_title_dict[doc_id].update({'pyongs_count':content['pyongs_count']})
+		id_title_dict[doc_id].update({'artist_name':content['album']['artist']['name']})
+		id_title_dict[doc_id].update({'artist_url':content['album']['artist']['url']})
+		id_title_dict[doc_id].update({'annotations':content['annotations'][:250] + '...'})
+
 	num_docs += len(docs)
 	for doc_id,content in docs.iteritems():
 		name = doc_id
@@ -86,7 +94,7 @@ def tfidf(directory_in, filename_out):
 	#Normalize doc vectors
 	#formula: (TFIDF score) / (Vector length)
 	for term, entries in inverse_index.iteritems():
-		inverse_index[term] = {doc:float(score)/doc_vector_lengths[doc] for doc, score in entries.iteritems()}
+		inverse_index[term] = {doc:round(float(score)/doc_vector_lengths[doc],3) for doc, score in entries.iteritems()}
 	print inverse_index[term]
 	f = open('Data/' + filename_out + '-tfidf', 'w')
 	json.dump(inverse_index, f)
@@ -102,6 +110,7 @@ def tfidf(directory_in, filename_out):
 			doc_vector[doc].update({term:score})
 	json.dump(doc_vector, open('Data/' + filename_out + '-doc-vector', 'w'))
 
+get_raw_albums()
 tfidf('Data/albums_raw/albums', 'index/albums')
 
 
