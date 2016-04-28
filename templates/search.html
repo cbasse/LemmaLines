@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>LEMMA LIMES Site Search</title>
 
-<link rel="stylesheet" type="text/css" href="styles.css" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}" />
 
 </head>
 
@@ -13,7 +13,7 @@
 <div id="page">
 
     <h1>LEMMA LIMES Site Search</h1>
-	<h2>Music Mofit Search Engine</h2>
+	<h2>Music Motif Search Engine</h2>
     
     <form id="searchForm" method="post">
 		<fieldset>
@@ -26,7 +26,7 @@
                 <input type="radio" name="check" value="song" id="searchSong" checked />
                 <label for="searchSong">Search by Song</label>
                 
-                <input type="radio" name="check" value="albumn" id="searchAlbumn" />
+                <input type="radio" name="check" value="albumn" id="searchAlbum" />
                 <label for="searchArtisit">Search by Albums</label>
 			</div>
                         
@@ -44,7 +44,7 @@
     
 
 <!-- TEMPLETE http://www.designrazor.net/free-html-css-search-box-download/ -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script src="script.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script src="{{ url_for('static',filename='script.js') }}"></script>
 </body>
 </html>

@@ -1,12 +1,19 @@
 $(document).ready(function(){
 	
-	var config = {
+	/*var config = {
 		siteURL		: 'genius.com',	// Change this to your site tutorialzine
 		searchSite	: true,
 		type		: 'web',
 		append		: false,
 		perPage		: 8,			// A maximum of 8 is allowed by Google
 		page		: 0				// The start page
+	}*/
+	
+	var config = {
+		siteURL		: 'genius.com',	// Change this to your site tutorialzine
+		domain		: 'song',
+		type		: 'search',
+		query 		: ''
 	}
 	
 	// The small arrow that marks the active search icon:
@@ -38,7 +45,13 @@ $(document).ready(function(){
 	$('#siteNameLabel').append(' '+config.siteURL);
 	
 	// Marking the Search tutorialzine.com radio as active:
-	$('#searchSong').click();	
+	$('#searchSong').click(function(){
+		config.domain = 'song'
+	});
+	
+	$('#searchAlbum').click(function(){
+		config.domain = 'album'
+	});
 	
 	// Marking the web search icon as active:
 	$('li.web').click();
@@ -47,6 +60,7 @@ $(document).ready(function(){
 	$('#s').focus();
 
 	$('#searchForm').submit(function(){
+		config.query = $('#s').val()
 		googleSearch();
 		return false;
 	});
@@ -76,8 +90,81 @@ $(document).ready(function(){
 		// URL of Google's AJAX search API
 		var apiURL = 'http://ajax.googleapis.com/ajax/services/search/'+settings.type+'?v=1.0&callback=?';
 		var resultsDiv = $('#resultsDiv');
+		var pageContainer = $('<div>',{className:'pageContainer'});
 		
-		$.getJSON(apiURL,{q:settings.term,rsz:settings.perPage,start:settings.page*settings.perPage},function(r){
+		
+				
+				
+		$.getJSON('https://lemma-limes-calebtamu.c9users.io/getstuff',data={domain:config.domain,type:config.type,query:config.query} , function(r){
+			console.log(r)	
+			
+			var results = r;
+			$('#more').remove();
+			
+			if(results.length){
+				
+				// If results were returned, add them to a pageContainer div,
+				// after which append them to the #resultsDiv:
+				
+				var pageContainer = $('<div>',{className:'pageContainer'});
+				
+				for(var i=0;i<results.length;i++){
+					// Creating a new result object and firing its toString method:
+					pageContainer.append(
+						'<div class="webResult">',
+						'<p>',results[i],'</p>', //r.content is the description displayed
+						'</div>');
+					
+				}
+				
+				if(!settings.append){
+					// This is executed when running a new search, 
+					// instead of clicking on the More button:
+					resultsDiv.empty();
+				}
+				
+				pageContainer.append('<div class="clear"></div>')
+							 .hide().appendTo(resultsDiv)
+							 .fadeIn('slow');
+				
+				/*var cursor = r.responseData.cursor;
+				
+				// Checking if there are more pages with results, 
+				// and deciding whether to show the More button:
+				
+				if( +cursor.estimatedResultCount > (settings.page+1)*settings.perPage){
+					$('<div>',{id:'more'}).appendTo(resultsDiv).click(function(){
+						googleSearch({append:true,page:settings.page+1});
+						$(this).fadeOut();
+					});
+				}*/
+			}
+			else {
+				
+				// No results were found for this search.
+				
+				resultsDiv.empty();
+				$('<p>',{className:'notFound',html:'No Results Were Found!'}).hide().appendTo(resultsDiv).fadeIn();
+			}
+		});
+				/*for(var i=0;i<results.length;i++){
+					// Creating a new result object and firing its toString method:
+					pageContainer.append('<div>results[i]</div>);
+				}
+				
+				if(!settings.append){
+					// This is executed when running a new search, 
+					// instead of clicking on the More button:
+					resultsDiv.empty();
+				}
+				
+				pageContainer.append('<div class="clear"></div>')
+							 .hide().appendTo(resultsDiv)
+							 .fadeIn('slow');*/
+				
+		
+		
+		/*$.getJSON(apiURL,{q:settings.term,rsz:settings.perPage,start:settings.page*settings.perPage},function(r){
 			
 			var results = r.responseData.results;
 			$('#more').remove();
@@ -123,7 +210,7 @@ $(document).ready(function(){
 				resultsDiv.empty();
 				$('<p>',{className:'notFound',html:'No Results Were Found!'}).hide().appendTo(resultsDiv).fadeIn();
 			}
-		});
+		});*/
 	}
 	
 	function result(r){
