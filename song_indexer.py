@@ -29,6 +29,7 @@ def tfidf(directory_in, filename_out):
 	song_title_dict = {}
 	inverse_index = {}
 	doc_freq = {}
+	doc_vector = {}
 	
 	
 	for filename in os.listdir(directory_in):
@@ -45,6 +46,9 @@ def tfidf(directory_in, filename_out):
 			song_title_dict[song_id].update({'artist_name':doc['artist']['name']})
 			song_title_dict[song_id].update({'artist_url':doc['artist']['url']})
 			song_title_dict[song_id].update({'annotations':doc['annotations'][:250] + '...'})
+			doc_vector.update({song_id:{}})
+			print doc_vector
+
 		num_docs += len(docs)
 		for doc in docs:
 			name = doc['song_id']
@@ -91,7 +95,7 @@ def tfidf(directory_in, filename_out):
 	doc_freq.update({'n_docs':num_docs})
 	json.dump(doc_freq, f)
 	f.close()
-	doc_vector = {}
+	
 	for term, data in inverse_index.iteritems():
 		for doc, score in data.iteritems():
 			if not doc_vector.has_key(doc):

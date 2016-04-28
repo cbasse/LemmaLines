@@ -88,21 +88,27 @@ def jsonTopResults(cosine_vals, title_dict, top):
 	for x in range(0,top):
 		max_doc = ''
 		max_val = 0
-		max_id = 0
+		max_id = -1
 		for song_id,val in cosine_vals.iteritems():
 			if max_val <= val:
 				max_val = val
 				max_id = song_id
+		if max_id == -1:
+			break
 		print title_dict[max_id]
 		results.append(title_dict[max_id])
 		cosine_vals.pop(max_id, None)
 		if len(cosine_vals) == 0: break
 	return results
 	
-song_title_dict = None
-inverse_index = None
-doc_vectors = {}
+songs_title_dict = None
+songs_inverse_index = None
+songs_doc_vectors = None
+
 albums_title_dict = None
+albums_inverse_index = None
+albums_doc_vectors = None
+
 
 
 def ranker(query_domain,query_type,query_string):
@@ -113,35 +119,50 @@ def ranker(query_domain,query_type,query_string):
 		cosine_val = None
 		if query_type == 'match':
 			song = query_string
-			for song_id, title in song_title_dict.iteritems():
-				if title.lower() == song.lower():
+			for song_id, content in songs_title_dict.iteritems():
+				if content['title'].lower() == song.lower():
 					#doc_vectors = json.load(open('Data/' + 'index/songs-doc-vector'), 'utf-8')
-					cosine_val = query_cosine(doc_vectors[song_id],inverse_index,song_title_dict)
+					print songs_doc_vectors[song_id]
+					cosine_val = query_cosine(songs_doc_vectors[song_id],songs_inverse_index,songs_title_dict)
 			if cosine_val == None:
 				print 'song not found'
 				sys.exit(0)
 		else:
 			query_index = query_tfidf(query_string)
-			cosine_val = query_cosine(query_index, inverse_index, song_title_dict)
-		return jsonTopResults(cosine_val, song_title_dict, 20)
+			cosine_val = query_cosine(query_index, albums_inverse_index, songs_title_dict)
+		return jsonTopResults(cosine_val, songs_title_dict, 20)
 	elif query_domain == 'album':
 		#albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 'utf-8')
 		#inverse_index = json.load(open('Data/' + 'index/albums-tfidf'), 'utf-8')
 		cosine_val = None
 		if query_type == 'match':
 			album = query_string
-			for album_id, title in albums_title_dict.iteritems():
-				if title.lower() == album.lower():
+			for album_id, content in albums_title_dict.iteritems():
+				if content['title'].lower() == album.lower():
 					#doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
-					cosine_val = query_cosine(doc_vectors[string(album_id)],inverse_index,albums_title_dict)
+					cosine_val = query_cosine(albums_doc_vectors[str(album_id)],albums_inverse_index,albums_title_dict)
 			if cosine_val == None:
-				print 'song not found'
+				print 'album not found'
 				sys.exit(0)
 		else:
 			query_index = query_tfidf(query_string)
-			cosine_val = query_cosine(query_index, inverse_index, albums_title_dict)
+			cosine_val = query_cosine(query_index, albums_inverse_index, albums_title_dict)
 		return jsonTopResults(cosine_val, albums_title_dict, 20)
 
+if (__name__ == '__main__'):
+	songs_title_dict = json.load(open('Data/' + 'index/songs-title-dict'), 'utf-8')
+	songs_inverse_index = json.load(open('Data/' + 'index/songs-tfidf'), 'utf-8')
+	songs_doc_vectors = json.load(open('Data/' + 'index/songs-doc-vector'), 'utf-8')
 
+	albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 'utf-8')
+	albums_inverse_index = json.load(open('Data/' + 'index/albums-tfidf'), 'utf-8')
+	albums_doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
+	ranker('song','find','hello world')
+	print 1
+	ranker('song','match','harder')
+	print 2
+	ranker('album','find','hello world')
+	print 3
+	ranker('album','match','watch the throne')
 
 
