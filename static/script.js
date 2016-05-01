@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var config = {
 		siteURL		: 'genius.com',	// Change this to your site tutorialzine
 		domain		: 'song',
-		type		: 'search',
+		type		: 'find',
 		query 		: ''
 	}
 	
@@ -95,25 +95,30 @@ $(document).ready(function(){
 		
 				
 				
-		$.getJSON('https://lemma-limes-calebtamu.c9users.io/getstuff',data={domain:config.domain,type:config.type,query:config.query} , function(r){
+		$.getJSON('http://127.0.0.1:5000/getstuff',data={domain:config.domain,type:config.type,query:config.query} , function(r){
 			console.log(r)	
 			
-			var results = r;
 			$('#more').remove();
 			
-			if(results.length){
+			if(r.length){
 				
 				// If results were returned, add them to a pageContainer div,
 				// after which append them to the #resultsDiv:
 				
 				var pageContainer = $('<div>',{className:'pageContainer'});
 				
-				for(var i=0;i<results.length;i++){
+				for(var i=0;i<r.length;i++){
 					// Creating a new result object and firing its toString method:
-					pageContainer.append(
+					arr = [ 
 						'<div class="webResult">',
-						'<p>',results[i],'</p>', //r.content is the description displayed
-						'</div>');
+						'<h2><a href="',r[i].url,'" target="_blank">\"',r[i].title,'\" by ',r[i].artist_name,'</a></h2>', //r.title displays artist & title
+						'<p>',r[i].annotations,'</p>', //r.content is the description displayed
+						'<a href="',r[i].artist_url,'" target="_blank">',r[i].artist_name,'</a>', //r.visibleUrl is the blue url link
+						'</div>'
+					];
+
+
+					pageContainer.append(arr.join(''));
 					
 				}
 				

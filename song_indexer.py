@@ -45,14 +45,19 @@ def tfidf(directory_in, filename_out):
 			song_title_dict[song_id].update({'pyongs_count':doc['pyongs_count']})
 			song_title_dict[song_id].update({'artist_name':doc['artist']['name']})
 			song_title_dict[song_id].update({'artist_url':doc['artist']['url']})
+			song_title_dict[song_id].update({'char_length':len(doc['annotations'])})
 			song_title_dict[song_id].update({'annotations':doc['annotations'][:250] + '...'})
+			if not doc['stats'].has_key('pageviews'):
+				song_title_dict[song_id].update({'pageviews':0})
+			else:
+				song_title_dict[song_id].update({'pageviews':doc['stats']['pageviews']})
 			doc_vector.update({song_id:{}})
-			print doc_vector
 
 		num_docs += len(docs)
 		for doc in docs:
 			name = doc['song_id']
 			text = doc['annotations'].lower()
+			text += ' ' + doc['title'].lower() 
 			words = re.findall('[a-z]{3,}', text)
 			for w in words:
 				if inverse_index.has_key(w) and inverse_index[w].has_key(name):
@@ -86,7 +91,6 @@ def tfidf(directory_in, filename_out):
 	#formula: (TFIDF score) / (Vector length)
 	for term, entries in inverse_index.iteritems():
 		inverse_index[term] = {doc:round(float(score)/doc_vector_lengths[doc],3) for doc, score in entries.iteritems()}
-	print inverse_index[term]
 	f = open('Data/' + filename_out + '-tfidf', 'w')
 	json.dump(inverse_index, f)
 	f.close()

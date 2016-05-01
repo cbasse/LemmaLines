@@ -24,6 +24,8 @@ def get_raw_albums():
 				annotations = raw_albums[album_id]['annotations']
 				raw_albums[album_id]['annotations'] = annotations + ' ' + raw_song['annotations']
 				raw_albums[album_id]['num_songs'] += 1
+				if raw_song['stats'].has_key('pageviews'):
+					raw_albums[album_id]['pageviews'] += raw_song['stats']['pageviews']
 				if raw_song['pyongs_count'] != None:
 					raw_albums[album_id]['pyongs_count'] += raw_song['pyongs_count']
 			else:
@@ -31,6 +33,10 @@ def get_raw_albums():
 				raw_albums[album_id].update({'annotations':raw_song['annotations']})
 				raw_albums[album_id].update({'album': raw_song['album']})
 				raw_albums[album_id].update({'num_songs':1})
+				if raw_song['stats'].has_key('pageviews'):
+					raw_albums[album_id].update({'pageviews': raw_song['stats']['pageviews']})
+				else:
+					raw_albums[album_id].update({'pageviews': 0})
 				if raw_song['pyongs_count'] != None:
 					raw_albums[album_id].update({'pyongs_count':raw_song['pyongs_count']})
 				else:
@@ -58,12 +64,15 @@ def tfidf(directory_in, filename_out):
 		id_title_dict[doc_id].update({'artist_name':content['album']['artist']['name']})
 		id_title_dict[doc_id].update({'artist_url':content['album']['artist']['url']})
 		id_title_dict[doc_id].update({'annotations':content['annotations'][:250] + '...'})
+		id_title_dict[doc_id].update({'char_length':len(content['annotations'])})
+		id_title_dict[doc_id].update({'pageviews':content['pageviews']})
 		doc_vector.update({doc_id:{}})
 
 	num_docs += len(docs)
 	for doc_id,content in docs.iteritems():
 		name = doc_id
 		text = content['annotations'].lower()
+		text += ' ' + content['album']['name'].lower()
 		words = re.findall('[a-z]{3,}', text)
 		for w in words:
 			if inverse_index.has_key(w) and inverse_index[w].has_key(name):
@@ -110,6 +119,8 @@ def tfidf(directory_in, filename_out):
 				doc_vector.update({doc:{}})
 			doc_vector[doc].update({term:score})
 	json.dump(doc_vector, open('Data/' + filename_out + '-doc-vector', 'w'))
+
+
 
 get_raw_albums()
 tfidf('Data/albums_raw/albums', 'index/albums')

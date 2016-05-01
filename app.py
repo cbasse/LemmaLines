@@ -13,9 +13,13 @@ app = Flask(__name__)
 
 #results = ranker.ranker("-song","","kanye")
 
-ranker.song_title_dict = json.load(open('Data/' + 'index/songs-title-dict'), 'utf-8')
-ranker.inverse_index = json.load(open('Data/' + 'index/songs-tfidf'), 'utf-8')
-ranker.doc_vectors = json.load(open('Data/' + 'index/songs-doc-vector'), 'utf-8')
+ranker.songs_title_dict = json.load(open('Data/' + 'index/songs-title-dict'), 'utf-8')
+ranker.songs_inverse_index = json.load(open('Data/' + 'index/songs-tfidf'), 'utf-8')
+ranker.songs_doc_vectors = json.load(open('Data/' + 'index/songs-doc-vector'), 'utf-8')
+
+ranker.albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 'utf-8')
+ranker.albums_inverse_index = json.load(open('Data/' + 'index/albums-tfidf'), 'utf-8')
+ranker.albums_doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
 
 
 @app.route("/")
@@ -30,5 +34,5 @@ def getstuff():
 
 
 #results = 
-app.run(host=os.getenv("IP", "0.0.0.0"),port=int(os.getenv("PORT", 8080)))
+app.run(debug = True)
 
