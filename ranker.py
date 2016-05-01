@@ -142,8 +142,8 @@ def ranker(query_domain,query_type,query_string):
 			query_index = query_tfidf(query_string)
 			cosine_val = query_cosine(query_index, songs_inverse_index, songs_title_dict, 793, 2134046)
 		
-		printTopResults(cosine_val, songs_title_dict, 10)
-		#return jsonTopResults(cosine_val, songs_title_dict, 20)
+		#printTopResults(cosine_val, songs_title_dict, 10)
+		return jsonTopResults(cosine_val, songs_title_dict, 20)
 	elif query_domain == 'album':
 		#albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 'utf-8')
 		#inverse_index = json.load(open('Data/' + 'index/albums-tfidf'), 'utf-8')
@@ -160,7 +160,7 @@ def ranker(query_domain,query_type,query_string):
 		else:
 			query_index = query_tfidf(query_string)
 			cosine_val = query_cosine(query_index, albums_inverse_index, albums_title_dict,1456, 8592315)
-		printTopResults(cosine_val, albums_title_dict, 20)
+		#printTopResults(cosine_val, albums_title_dict, 20)
 		return jsonTopResults(cosine_val, albums_title_dict, 20)
 	elif query_domain == 'artist':
 		#albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 'utf-8')
@@ -178,8 +178,8 @@ def ranker(query_domain,query_type,query_string):
 		else:
 			query_index = query_tfidf(query_string)
 			cosine_val = query_cosine(query_index, artists_inverse_index, artists_title_dict,1456, 8592315)
-		printTopResults(cosine_val, artists_title_dict, 20)
-		#return jsonTopResults(cosine_val, artists_title_dict, 20)
+		#printTopResults(cosine_val, artists_title_dict, 20)
+		return jsonTopResults(cosine_val, artists_title_dict, 20)
 
 if (__name__ == '__main__'):
 	songs_title_dict = json.load(open('Data/' + 'index/songs-title-dict'), 'utf-8')
