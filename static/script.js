@@ -53,6 +53,10 @@ $(document).ready(function(){
 		config.domain = 'album'
 	});
 	
+	$('#searchArtist').click(function(){
+		config.domain = 'artist'
+	});
+	
 	// Marking the web search icon as active:
 	$('li.web').click();
 	
@@ -65,7 +69,7 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	$('#searchSong,#searchAlbumn').change(function(){
+	$('#searchSong,#searchAlbumn,#searchArtist').change(function(){
 		// Listening for a click on one of the radio buttons.
 		// config.searchSong is either true or false.
 		
@@ -108,18 +112,29 @@ $(document).ready(function(){
 				var pageContainer = $('<div>',{className:'pageContainer'});
 				
 				for(var i=0;i<r.length;i++){
-					// Creating a new result object and firing its toString method:
-					arr = [ 
-						'<div class="webResult">',
-						'<h2><a href="',r[i].url,'" target="_blank">\"',r[i].title,'\" by ',r[i].artist_name,'</a></h2>', //r.title displays artist & title
-						'<p>',r[i].annotations,'</p>', //r.content is the description displayed
-						'<a href="',r[i].artist_url,'" target="_blank">',r[i].artist_name,'</a>', //r.visibleUrl is the blue url link
-						'</div>'
-					];
-
-
-					pageContainer.append(arr.join(''));
-					
+					if(config.domain == 'artist') {
+							arr = [ 
+							'<div class="webResult">',
+							'<h2><a href="',r[i].url,'" target="_blank">',r[i].title,'</a></h2>', //r.title displays artist & title
+							'<img src="',r[i].img_url,'">',
+							'<p>',r[i].annotations,'</p>', //r.content is the description displayed
+							'<c><a href="',r[i].artist_url,'" target="_blank">',r[i].artist_name,'</a></c>', //r.visibleUrl is the blue url link
+							'</div>'
+						];
+						pageContainer.append(arr.join(''));
+					}
+					else {
+						// Creating a new result object and firing its toString method:
+						arr = [ 
+							'<div class="webResult">',
+							'<h2><a href="',r[i].url,'" target="_blank">\"',r[i].title,'\"</a> by ',r[i].artist_name,'</h2>', //r.title displays artist & title
+							'<img src="',r[i].img_url,'">',
+							'<p>',r[i].annotations,'</p>', //r.content is the description displayed
+							'<c><a href="',r[i].artist_url,'" target="_blank">',r[i].artist_name,'</a></c>', //r.visibleUrl is the blue url link
+							'</div>'
+						];
+						pageContainer.append(arr.join(''));
+					}
 				}
 				
 				if(!settings.append){

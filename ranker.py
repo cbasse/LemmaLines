@@ -71,7 +71,6 @@ def query_tfidf(query_string):
 			query_index.update({w:1})
 
 	query_index = query_synonyms(query_index)
-	print query_index
 	#Calculate TFIDF score for each value in query inverse
 	#formula: (1+log(tf))*log(N/df) 
 	query_vector_length = 0
@@ -127,7 +126,6 @@ def jsonTopResults(cosine_vals, title_dict, top):
 				max_id = song_id
 		if max_id == -1:
 			break
-			print title_dict[max_id]
 		#set result content to highest matched keywords
 		else:
 			count = 0

@@ -38,7 +38,7 @@ h2{
 	/* The search form. */
 	/*background-color:*/
 	background-color:none;
-	padding:50px 50px 30px;
+	padding:50px 250px 30px;
 	margin:70px 0;
 	position:relative;
 	/*border: 1px solid black;*/
@@ -154,7 +154,7 @@ span.arrow{
 #searchInContainer{
 	float:left;
 	margin-top:5px;
-	width:330px;
+	width:410px;
 }
 
 /*search for song/album option*/
@@ -200,7 +200,7 @@ p.notFound{
 /* Web & news results */
 
 
-.webResult{ text-shadow:1px 1px 0 #fff;margin-bottom:50px;} /*white text shadow*/
+.webResult{ text-shadow:.5px .5px 0 #fff;margin-bottom:50px;} /*white text shadow*/
 .webResult h2{ 
 	/* Background color of web results view  #EFFC3C;-yellow*/
 	background-color: #6ddc52;
@@ -215,9 +215,11 @@ p.notFound{
 	border-radius:10px;
 }
 /*text color of web results view ff0000-red, fff-white, eee-gray shadow*/
-.webResult h2 b{ color:#FF0000; } /*red in result title*/
-.webResult h2 a{ color:#000;border:none;}
-.webResult p{ line-height:1.5;padding:15px 20px;}
+.webResult img { height:100px; width:100px; margin-top:10px; margin-left:10px;}
+.webResult h2 b{ color:#000; border:none;} 
+.webResult h2 a{ color:#FF0000; font-weight:bold;} /*red in result title*/
+.webResult c { margin-left:120px; margin-top:-90px;}
+.webResult p{ line-height:1.5; padding: 15px 10px; margin-left:110px; margin-top:-120px;}
 .webResult p b{ color:red;} /*red in result description*/
 .webResult > a{ margin-left:20px;} /*left margin on blue url*/
 
