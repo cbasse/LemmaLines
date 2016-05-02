@@ -46,7 +46,12 @@ def tfidf(directory_in, filename_out):
 			song_title_dict[song_id].update({'artist_name':doc['artist']['name']})
 			song_title_dict[song_id].update({'artist_url':doc['artist']['url']})
 			song_title_dict[song_id].update({'char_length':len(doc['annotations'])})
-			song_title_dict[song_id].update({'annotations':doc['annotations'][:250] + '...'})
+			song_title_dict[song_id].update({'annotations':doc['annotations'][:350] + '...'})
+			if not doc['album'] == None:
+				song_title_dict[song_id].update({'img_url':doc['album']['cover_art_url']})
+			else:
+				song_title_dict[song_id].update({'img_url':'https://assets.genius.com/images/default_cover_art.png'})
+
 			if not doc['stats'].has_key('pageviews'):
 				song_title_dict[song_id].update({'pageviews':0})
 			else:

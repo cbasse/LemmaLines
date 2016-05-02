@@ -63,8 +63,9 @@ def tfidf(directory_in, filename_out):
 		id_title_dict[doc_id].update({'pyongs_count':content['pyongs_count']})
 		id_title_dict[doc_id].update({'artist_name':content['album']['artist']['name']})
 		id_title_dict[doc_id].update({'artist_url':content['album']['artist']['url']})
-		id_title_dict[doc_id].update({'annotations':content['annotations'][:250] + '...'})
+		id_title_dict[doc_id].update({'annotations':content['annotations'][:350] + '...'})
 		id_title_dict[doc_id].update({'char_length':len(content['annotations'])})
+		id_title_dict[doc_id].update({'img_url':content['album']['cover_art_url']})
 		id_title_dict[doc_id].update({'pageviews':content['pageviews']})
 		doc_vector.update({doc_id:{}})
 

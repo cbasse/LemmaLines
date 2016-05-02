@@ -2,7 +2,7 @@ import sys
 import re
 import math
 import simplejson as json
-
+import requests
 import gzip
 import cStringIO
 
@@ -28,13 +28,15 @@ def pyongs_calc(doc_pyongs, max_pyongs):
 
 	return math.log10(float(doc_pyongs))/math.log10(float(max_pyongs))
 
-def query_cosine(query_index, inverse_index, song_title_dict, max_pyongs, max_pageviews):
+def query_cosine(query_index, inverse_index, song_title_dict, exclude):
 	#capture the cosine values of each document to the query
 	#formula: dot-product between normalized doc and query vectors
 	cosine_vals = {}
 	for term, query_score in query_index.iteritems():
 		for doc_id,content in song_title_dict.iteritems():
 			if content['char_length'] < 500:
+				continue
+			if content['artist_name'] in exclude:
 				continue 
 			if inverse_index.has_key(term) and inverse_index[term].has_key(str(doc_id)):
 				if not cosine_vals.has_key(doc_id):
@@ -43,14 +45,21 @@ def query_cosine(query_index, inverse_index, song_title_dict, max_pyongs, max_pa
 				#formula: dot-product between normalized doc and query vectors
 				cosine_vals[doc_id] += query_score * inverse_index[term][str(doc_id)]
 
-	#for doc_id,content in song_title_dict.iteritems():
-	#	if cosine_vals.has_key(doc_id):
-	#		cosine_vals[doc_id] = cosine_vals[doc_id] #+ \
-								  #(0.1*pyongs_calc(content['pyongs_count'],max_pyongs)) + \
-								  #(0.05*pyongs_calc(content['pageviews'],max_pageviews))
-
 
 	return cosine_vals
+
+
+def query_synonyms(query_index):
+	additional = {}
+	for w,_ in query_index.iteritems():
+		response = requests.get('https://wordsapiv1.p.mashape.com/words/'+w+'/synonyms', headers={'Accept':'application/json','X-Mashape-Key': 'lcAJdlrT9UmshBve6YoWHHURX9vCp1MyChHjsnisQgZ6o5Q3cv'})
+		if response.status_code == 200:
+			response = response.json()
+			for syn in response['synonyms']:
+				additional.update({syn:1})
+	query_index.update(additional)
+	return query_index
+	
 
 def query_tfidf(query_string):
 	query_index = {}
@@ -61,7 +70,8 @@ def query_tfidf(query_string):
 		else:
 			query_index.update({w:1})
 
-
+	query_index = query_synonyms(query_index)
+	print query_index
 	#Calculate TFIDF score for each value in query inverse
 	#formula: (1+log(tf))*log(N/df) 
 	query_vector_length = 0
@@ -117,10 +127,20 @@ def jsonTopResults(cosine_vals, title_dict, top):
 				max_id = song_id
 		if max_id == -1:
 			break
-		print title_dict[max_id]
-		results.append(title_dict[max_id])
+			print title_dict[max_id]
+		#set result content to highest matched keywords
+		else:
+			count = 0
+			for ch in title_dict[max_id]['annotations']:
+				if ch == '?' or ch == ' ':
+					count += 1
+				else:
+					break
+			title_dict[max_id]['annotations'] = title_dict[max_id]['annotations'][count:]
+			results.append(title_dict[max_id])
 		cosine_vals.pop(max_id, None)
 		if len(cosine_vals) == 0: break
+
 	return results
 
 
@@ -134,13 +154,14 @@ def ranker(query_domain,query_type,query_string):
 			song = query_string
 			for song_id, content in songs_title_dict.iteritems():
 				if content['title'].lower() == song.lower():
-					cosine_val = query_cosine(songs_doc_vectors[song_id],songs_inverse_index,songs_title_dict, 793, 90)
+					exclude = [content['artist_name']]#exclude any songs by the same artist
+					cosine_val = query_cosine(songs_doc_vectors[song_id],songs_inverse_index,songs_title_dict, exclude)
 			if cosine_val == None:
 				print 'song not found'
 				sys.exit(0)
 		else:
 			query_index = query_tfidf(query_string)
-			cosine_val = query_cosine(query_index, songs_inverse_index, songs_title_dict, 793, 2134046)
+			cosine_val = query_cosine(query_index, songs_inverse_index, songs_title_dict, [])
 		
 		#printTopResults(cosine_val, songs_title_dict, 10)
 		return jsonTopResults(cosine_val, songs_title_dict, 20)
@@ -152,14 +173,15 @@ def ranker(query_domain,query_type,query_string):
 			album = query_string
 			for album_id, content in albums_title_dict.iteritems():
 				if content['title'].lower() == album.lower():
+					exclude = [content['artist_name']]
 					#doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
-					cosine_val = query_cosine(albums_doc_vectors[str(album_id)],albums_inverse_index,albums_title_dict,1456, 0)
+					cosine_val = query_cosine(albums_doc_vectors[str(album_id)],albums_inverse_index,albums_title_dict,exclude)
 			if cosine_val == None:
 				print 'album not found'
 				sys.exit(0)
 		else:
 			query_index = query_tfidf(query_string)
-			cosine_val = query_cosine(query_index, albums_inverse_index, albums_title_dict,1456, 8592315)
+			cosine_val = query_cosine(query_index, albums_inverse_index, albums_title_dict,[])
 		#printTopResults(cosine_val, albums_title_dict, 20)
 		return jsonTopResults(cosine_val, albums_title_dict, 20)
 	elif query_domain == 'artist':
@@ -169,15 +191,16 @@ def ranker(query_domain,query_type,query_string):
 		if query_type == 'match':
 			artist = query_string
 			for artist_id, content in artists_title_dict.iteritems():
-				if content['title'].lower() == album.lower():
+				if content['title'].lower() == artist.lower():
+					exclude = [content['artist_name']]
 					#doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
-					cosine_val = query_cosine(artists_doc_vectors[str(artist_id)],artists_inverse_index,artists_title_dict,1456, 0)
+					cosine_val = query_cosine(artists_doc_vectors[str(artist_id)],artists_inverse_index,artists_title_dict,exclude)
 			if cosine_val == None:
 				print 'album not found'
 				sys.exit(0)
 		else:
 			query_index = query_tfidf(query_string)
-			cosine_val = query_cosine(query_index, artists_inverse_index, artists_title_dict,1456, 8592315)
+			cosine_val = query_cosine(query_index, artists_inverse_index, artists_title_dict,[])
 		#printTopResults(cosine_val, artists_title_dict, 20)
 		return jsonTopResults(cosine_val, artists_title_dict, 20)
 
@@ -193,9 +216,8 @@ if (__name__ == '__main__'):
 	artists_title_dict = json.load(open('Data/' + 'index/artists-title-dict'), 'utf-8')
 	artists_inverse_index = json.load(open('Data/' + 'index/artists-tfidf'), 'utf-8')
 	artists_doc_vectors = json.load(open('Data/' + 'index/artists-doc-vector'), 'utf-8')
-
 	print 1 
-	ranker('album','match','watch the throne')
+	ranker('artist','find','death')
 	
 
 

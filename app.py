@@ -6,7 +6,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 import ranker
-import json
+import simplejson as json
 
 
 app = Flask(__name__)
@@ -21,9 +21,9 @@ ranker.albums_title_dict = json.load(open('Data/' + 'index/albums-title-dict'), 
 ranker.albums_inverse_index = json.load(open('Data/' + 'index/albums-tfidf'), 'utf-8')
 ranker.albums_doc_vectors = json.load(open('Data/' + 'index/albums-doc-vector'), 'utf-8')
 
-artists_title_dict = json.load(open('Data/' + 'index/artists-title-dict'), 'utf-8')
-artists_inverse_index = json.load(open('Data/' + 'index/artists-tfidf'), 'utf-8')
-artists_doc_vectors = json.load(open('Data/' + 'index/artists-doc-vector'), 'utf-8')
+ranker.artists_title_dict = json.load(open('Data/' + 'index/artists-title-dict'), 'utf-8')
+ranker.artists_inverse_index = json.load(open('Data/' + 'index/artists-tfidf'), 'utf-8')
+ranker.artists_doc_vectors = json.load(open('Data/' + 'index/artists-doc-vector'), 'utf-8')
 
 
 @app.route("/")
@@ -38,5 +38,5 @@ def getstuff():
 
 
 #results = 
-app.run(debug = True)
+app.run()
 
